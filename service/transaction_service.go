@@ -12,17 +12,18 @@ import (
 	"github.com/petruskuswandi/bwastartup.git/request"
 )
 
-type ServiceTransaction interface {
-	GetTransactionByCampaignID(input request.GetTransactionCampaignsInput) ([]models.Transaction, error)
-	GetTransactionByUserID(userID string) ([]models.Transaction, error)
-	CreateTransaction(input request.CreateTransactionInput) (models.Transaction, error)
-	ProcessPayment(input request.TransactionNotificationInput) error
-}
 type serviceTransaction struct {
 	repository         repository.TransactionRepository
 	campaignRepository repository.CampaignRepository
 	paymentService     payment.Service
 	mutex              sync.Mutex
+}
+type ServiceTransaction interface {
+	GetTransactionByCampaignID(input request.GetTransactionCampaignsInput) ([]models.Transaction, error)
+	GetTransactionByUserID(userID string) ([]models.Transaction, error)
+	CreateTransaction(input request.CreateTransactionInput) (models.Transaction, error)
+	ProcessPayment(input request.TransactionNotificationInput) error
+	GetAllTransactions() ([]models.Transaction, error)
 }
 
 func NewServiceTransaction(repo repository.TransactionRepository, campaignRepository repository.CampaignRepository, paymentService payment.Service, mutex sync.Mutex) *serviceTransaction {
@@ -173,4 +174,13 @@ func (s *serviceTransaction) getCurrentCounterFromDatabase() (int64, error) {
 
 func (s *serviceTransaction) saveCounterToDatabase(counter int64) error {
 	return nil
+}
+
+func (s *serviceTransaction) GetAllTransactions() ([]models.Transaction, error) {
+	transactions, err := s.repository.FindAll()
+	if err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
 }

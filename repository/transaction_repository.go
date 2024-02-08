@@ -12,6 +12,7 @@ type TransactionRepository interface {
 	Save(transaction models.Transaction) (models.Transaction, error)
 	GetCurrentCounter() (int64, error)
 	Update(transaction models.Transaction) (models.Transaction, error)
+	FindAll() ([]models.Transaction, error)
 }
 type transactionRepository struct {
 	db *gorm.DB
@@ -83,4 +84,15 @@ func (r *transactionRepository) GetCurrentCounter() (int64, error) {
 	}
 
 	return count, nil
+}
+
+func (r *transactionRepository) FindAll() ([]models.Transaction, error) {
+	var transactions []models.Transaction
+
+	err := r.db.Preload("Campaign").Order("id desc").Find(&transactions).Error
+	if err != nil {
+		return transactions, err
+	}
+
+	return transactions, nil
 }
