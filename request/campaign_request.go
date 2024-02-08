@@ -27,7 +27,18 @@ type FormCreateCampaignInput struct {
 	Description      string `form:"description" binding:"required"`
 	GoalAmount       int    `form:"goal_amount" binding:"required"`
 	Perks            string `form:"perks" binding:"required"`
-	UserID           int    `form:"user_id" binding:"required"`
+	UserID           string `form:"user_id" binding:"required"`
 	Users            []models.User
 	Error            error
+}
+
+type FormUpdateCampaignInput struct {
+	ID               string
+	Name             string `form:"name" binding:"required"`
+	ShortDescription string `form:"short_description" binding:"required"`
+	Description      string `form:"description" binding:"required"`
+	GoalAmount       int    `form:"goal_amount" binding:"required"`
+	Perks            string `form:"perks" binding:"required"`
+	Error            error
+	User             models.User
 }
