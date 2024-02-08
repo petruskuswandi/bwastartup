@@ -1,0 +1,5 @@
+images/*
+tmp/*
+.air.toml
+startup-frontend/*
+.env
